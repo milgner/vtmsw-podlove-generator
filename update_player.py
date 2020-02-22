@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import pyinotify
-import asyncio
 import asyncore
 import os
 import eyed3
@@ -91,7 +90,6 @@ class EventProcessor(pyinotify.ProcessEvent):
   process_IN_CLOSE_WRITE = process_IN_MOVED_TO = process_IN_MOVE_SELF = process_IN_DELETE = process_event
 
 wm = pyinotify.WatchManager()
-loop = asyncio.get_event_loop()
 notifier = pyinotify.AsyncNotifier(wm, EventProcessor())
 wm.add_watch(directory, pyinotify.IN_CLOSE_WRITE | pyinotify.IN_MOVED_TO | pyinotify.IN_MOVE_SELF | pyinotify.IN_DELETE)
 
