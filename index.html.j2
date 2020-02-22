@@ -1,0 +1,47 @@
+<html>
+<body>
+<script src="https://cdn.podlove.org/web-player/embed.js"></script>
+{% for episode in episodes %}
+<div id="player{{ loop.index0 }}"></div>
+<script>
+    podlovePlayer('#player{{ loop.index0 }}', {
+        version: 5,
+        title: '{{ episode.title }}',
+        publicationDate: '{{ episode.publication_date }}',
+        poster: '{{ episode.poster_url }}',
+        show: {
+            title: 'Stille Wasser',
+            subtitle: 'Ein Vampire The Masquerade Podcast',
+            summary: 'Hier kommt eine tolle Zusammenfassung rein',
+            poster: '{{ poster_url }}',
+            url: 'https://sites.google.com/view/vtm-stillewasser/startseite'
+        },
+        duration: '{{ episode.duration }}',
+        chapters: [
+            {% for chapter in episode.chapters %}
+            { start:"{{ chapter.start }}", title: '{{ chapter.name }}'},
+            {% endfor %}
+        ],
+        audio: [
+          {
+            url: 'https://vtmsw.illunis.net/{{episode.filename}}',
+            mimeType: 'audio/mpeg',
+            size: {{ episode.filesize }},
+            title: 'Audio MP3'
+          }
+        ],
+        contributors: [
+          {
+            id: 10,
+            name: 'Marcus Ilgner',
+            avatar: 'https://avatars3.githubusercontent.com/u/160025?s=460&v=4',
+            role: { id: '10', slug: 'tech', title: 'Tech' },
+            group: { id: '2', slug: 'behind the scenes', title: 'Behind The Scenes' },
+            comment: null
+          }
+        ]
+    });
+</script>
+{% endfor %}
+</body>
+</html>
