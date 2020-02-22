@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import pyinotify
+import asyncio
 import asyncore
 import os
 import eyed3
@@ -24,9 +25,7 @@ def duration_from_seconds(s):
     s = s
     m, s = divmod(s, 60)
     h, m = divmod(m, 60)
-    d, h = divmod(h, 24)
-    timelapsed = "{:01d}:{:02d}:{:02d}:{:02d}".format(int(d),
-                                                      int(h),
+    timelapsed = "{:d}:{:02d}:{:02d}".format(int(h),
                                                       int(m),
                                                       int(s))
     return timelapsed
@@ -90,6 +89,7 @@ class EventProcessor(pyinotify.ProcessEvent):
   process_IN_CLOSE_WRITE = process_IN_MOVED_TO = process_IN_MOVE_SELF = process_IN_DELETE = process_event
 
 wm = pyinotify.WatchManager()
+loop = asyncio.get_event_loop()
 notifier = pyinotify.AsyncNotifier(wm, EventProcessor())
 wm.add_watch(directory, pyinotify.IN_CLOSE_WRITE | pyinotify.IN_MOVED_TO | pyinotify.IN_MOVE_SELF | pyinotify.IN_DELETE)
 

@@ -1,47 +1,201 @@
 <html>
 <body>
-<script src="https://cdn.podlove.org/web-player/embed.js"></script>
-{% for episode in episodes %}
-<div id="player{{ loop.index0 }}"></div>
-<script>
-    podlovePlayer('#player{{ loop.index0 }}', {
+    <script src="https://cdn.podlove.org/web-player/5.x/embed.js"></script>
+    <div id="player">
+        <root style="max-width:950px;min-width:260px;">
+            <div class="tablet:px-6 tablet:pt-6 mobile:px-4 mobile:pt-4 flex flex-col">
+                <div class="flex-col items-center mobile:flex tablet:hidden">
+                    <show-title class="text-sm"></show-title>
+                    <episode-title class="text-base mb-2"></episode-title>
+                    <subscribe-button class="mb-4 mobile:flex tablet:hidden"></subscribe-button>
+                    <poster class="rounded-sm w-48 shadow overflow-hidden"></poster>
+                    <divider class="w-full my-6"></divider>
+                </div>
+                <div class="tablet:flex flex-grow">
+                    <div class="w-64 mobile:hidden tablet:block tablet:mr-6">
+                        <poster class="rounded-sm shadow overflow-hidden"></poster>
+                    </div>
+                    <div class="w-full">
+                        <div class="hidden tablet:block">
+                            <show-title class="text-base"></show-title>
+                            <episode-title class="text-xl desktop:text-2xl"></episode-title>
+                            <divider class="w-full my-4"></divider>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="block">
+                                <play-state on="active">
+                                    <speed-control class="block hidden tablet:block"></speed-control>
+                                </play-state>
+                            </div>
+                            <div class="flex">
+                                <play-state on="active">
+                                    <chapter-previous class="mx-2 block"></chapter-previous>
+                                </play-state>
+                                <play-state on="active">
+                                    <step-backward class="mx-2 block"></step-backward>
+                                </play-state>
+                                <play-button class="mx-2 block" label="Podcast abspielen"></play-button>
+                                <play-state on="active">
+                                    <step-forward class="mx-2 block"></step-forward>
+                                </play-state>
+                                <play-state on="active">
+                                    <chapter-next class="mx-2 block"></chapter-next>
+                                </play-state>
+                            </div>
+                            <div class="block">
+                                <play-state on="active">
+                                    <volume-control class="flex items-center hidden tablet:flex"></volume-control>
+                                </play-state>
+                            </div>
+                        </div>
+                        <div class="flex w-full">
+                            <progress-bar></progress-bar>
+                        </div>
+                        <div class="flex w-full -mt-2">
+                            <div class="w-3/12 text-left">
+                                <timer-current class="text-sm"></timer-current>
+                            </div>
+                            <div class="w-6/12 text-center">
+                                <play-state on="active">
+                                    <current-chapter class="text-sm truncate"></current-chapter>
+                                </play-state>
+                            </div>
+                            <div class="w-3/12 text-right">
+                                <timer-duration class="text-sm"></timer-duration>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <divider class="w-full mt-6 mb-3"></divider>
+                <div class="flex justify-between">
+                    <div class="flex mobile:w-full tablet:w-3/12 desktop:w-3/12 justify-between">
+                        <tab-trigger tab="shownotes">
+                            <icon type="info"></icon>
+                        </tab-trigger>
+                        <tab-trigger tab="chapters">
+                            <icon type="chapter"></icon>
+                        </tab-trigger>
+                        <tab-trigger tab="transcripts">
+                            <icon type="transcripts"></icon>
+                        </tab-trigger>
+                        <tab-trigger tab="files">
+                            <icon type="download"></icon>
+                        </tab-trigger>
+                        <tab-trigger tab="playlist">
+                            <icon type="playlist"></icon>
+                        </tab-trigger>
+                        <tab-trigger tab="share">
+                            <icon type="share"></icon>
+                        </tab-trigger>
+                    </div>
+                    <subscribe-button class="mt-1 mobile:hidden tablet:flex"></subscribe-button>
+                </div>
+            </div>
+            <div class="w-full relative overflow-hidden">
+                <tab name="shownotes">
+                    <tab-shownotes></tab-shownotes>
+                </tab>
+                <tab name="chapters">
+                    <tab-chapters></tab-chapters>
+                </tab>
+                <tab name="transcripts">
+                    <tab-transcripts></tab-transcripts>
+                </tab>
+                <tab name="files">
+                    <tab-files></tab-files>
+                </tab>
+                <tab name="playlist">
+                    <tab-playlist></tab-playlist>
+                </tab>
+                <tab name="share">
+                    <tab-share></tab-share>
+                </tab>
+                <tab-overflow></tab-overflow>
+            </div>
+            <error></error>
+        </root>
+    </div>
+
+{% macro showInfo(episode) -%}
+    title: '{{ episode.title }}',
+    publicationDate: '{{ episode.publication_date }}',
+    poster: '{{ episode.poster_url }}',
+    show: {
+      title: 'Stille Wasser',
+      subtitle: 'Ein Vampire The Masquerade Podcast',
+      summary: 'Willkommen in Deep Water',
+      poster: '{{ poster_url }}',
+      url: 'https://sites.google.com/view/vtm-stillewasser/startseite'
+    },
+    duration: '{{ episode.duration }}',
+    chapters: [
+      {% for chapter in episode.chapters %}
+        { start:"{{ chapter.start }}", title: '{{ chapter.name }}'},
+      {% endfor %}
+    ],
+    audio: [
+      {
+        url: 'https://vtmsw.illunis.net/{{episode.filename}}',
+        mimeType: 'audio/mpeg',
+        size: {{ episode.filesize }},
+        title: 'Audio MP3'
+      }
+    ],
+    contributors: [
+      {
+        id: 10,
+        name: 'Marcus Ilgner',
+        avatar: 'https://avatars3.githubusercontent.com/u/160025?s=460&v=4',
+        role: { id: '10', slug: 'tech', title: 'Tech' },
+        group: { id: '2', slug: 'hinter-den-kulissen', title: 'Hinter den Kulissen' },
+        comment: null
+      }
+    ]
+{%- endmacro %}
+
+    <script>
+    podlovePlayer('#player', {
         version: 5,
-        title: '{{ episode.title }}',
-        publicationDate: '{{ episode.publication_date }}',
-        poster: '{{ episode.poster_url }}',
-        show: {
-            title: 'Stille Wasser',
-            subtitle: 'Ein Vampire The Masquerade Podcast',
-            summary: 'Hier kommt eine tolle Zusammenfassung rein',
-            poster: '{{ poster_url }}',
-            url: 'https://sites.google.com/view/vtm-stillewasser/startseite'
-        },
-        duration: '{{ episode.duration }}',
-        chapters: [
-            {% for chapter in episode.chapters %}
-            { start:"{{ chapter.start }}", title: '{{ chapter.name }}'},
+        {{ showInfo(episodes[0]) }}
+    },
+    {
+        playlist: [
+            {% for episode in episodes %} 
+            {
+              title: '{{ episode.title }}',
+              duration: '{{ episode.duration }}',
+              config: { {{ showInfo(episode) }} }
+            },
             {% endfor %}
         ],
-        audio: [
-          {
-            url: 'https://vtmsw.illunis.net/{{episode.filename}}',
-            mimeType: 'audio/mpeg',
-            size: {{ episode.filesize }},
-            title: 'Audio MP3'
-          }
+        activeTab: 'playlist',
+        visibleComponents: [
+            "controlChapters",
+            "controlSteppers",
+            "episodeTitle",
+            "poster",
+            "progressbar",
+            "showTitle",
+            "subtitle",
+            "tabAudio",
+            //    "tabChapters",
+            "tabFiles",
+            "tabInfo",
         ],
-        contributors: [
-          {
-            id: 10,
-            name: 'Marcus Ilgner',
-            avatar: 'https://avatars3.githubusercontent.com/u/160025?s=460&v=4',
-            role: { id: '10', slug: 'tech', title: 'Tech' },
-            group: { id: '2', slug: 'behind the scenes', title: 'Behind The Scenes' },
-            comment: null
-          }
-        ]
+        theme: {
+            tokens: {
+                brand: '#902711',
+                brandDark: '#902711',
+                brandDarkest: '#902711',
+                brandLightest: '#FAEEDD',
+                shadeDark: '#902711',
+                shadeBase: '#902711',
+                contrast: '#000',
+                alt: '#FAEEDD'
+            }
+        }
     });
-</script>
-{% endfor %}
+    </script>
 </body>
+
 </html>
